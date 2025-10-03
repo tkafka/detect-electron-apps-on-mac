@@ -1,0 +1,1 @@
+# detect-electron-apps-on-mac
