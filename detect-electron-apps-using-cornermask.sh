@@ -4,7 +4,7 @@ if [[ ! -f $(which rg) ]]; then
   exit 1
 fi
 
-mdfind "kMDItemFSName == '*.app'" | while read app; do
+mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read app; do
   electronFiles=$(find "$app" -name "Electron Framework" -type f 2>/dev/null)
   
   if [[ -n "$electronFiles" ]]; then
