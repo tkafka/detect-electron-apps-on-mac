@@ -1,3 +1,4 @@
+#!/bin/sh
 # Detect affected Electron versions
 mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read app; do
   appName=$(basename "$app")
