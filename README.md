@@ -5,6 +5,9 @@ This script detects apps with not yet updated versions of Electron.
 Repo:
 https://github.com/tkafka/detect-electron-apps-on-mac
 
+Gist:
+https://gist.github.com/tkafka/e3eb63a5ec448e9be6701bfd1f1b1e58
+
 See:
 - https://github.com/electron/electron/issues/48311#issuecomment-3332181420
 - [Michael Tsai: Electron Apps Causing System-Wide Lag on Tahoe](https://mjtsai.com/blog/2025/09/30/electron-apps-causing-system-wide-lag-on-tahoe/)
