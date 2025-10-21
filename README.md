@@ -2,9 +2,6 @@
 
 This script detects apps with not yet updated versions of Electron.
 
-Repo:
-https://github.com/tkafka/detect-electron-apps-on-mac
-
 Gist:
 https://gist.github.com/tkafka/e3eb63a5ec448e9be6701bfd1f1b1e58
 
