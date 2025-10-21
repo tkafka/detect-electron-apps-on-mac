@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Directly detect Electron apps using the _cornerMask override - thanks avarayr!
-mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read app; do
+mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read -r app; do
   electronFiles=$(find "$app" -name "Electron Framework" -type f 2>/dev/null)
   
   if [[ -n "$electronFiles" ]]; then
@@ -11,7 +11,7 @@ mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read app; do
         ev=$(grep -aoE 'Chrome/.*Electron/[0-9]+(\.[0-9]+){1,3}' -- "$filename" 2>/dev/null | head -n1 | sed -E 's/.*Electron\/([0-9]+(\.[0-9]+){1,3}).*/\1/')
         [ -z "$ev" ] && ev=$(grep -aoE 'Electron/[0-9]+(\.[0-9]+){1,3}' -- "$filename" 2>/dev/null | head -n1 | sed -E 's/.*Electron\/([0-9]+(\.[0-9]+){1,3}).*/\1/')
         
-        relativePath=$(echo "$filename" | sed "s|$app/||")
+          relativePath="${filename#"$app/"}"
         
         if grep -aqF "_cornerMask" -- "$filename" 2>/dev/null; then
           echo "❌ $appName (Electron ${ev:-unknown}) - $relativePath"
