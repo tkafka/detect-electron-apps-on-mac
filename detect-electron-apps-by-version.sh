@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Detect affected Electron versions
-mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read -r app; do
+find /Applications /System/Applications ~/Applications -name "*.app" -type d 2>/dev/null | sort --ignore-case | while read -r app; do
   appName=$(basename "$app")
   electronFrameworkInfo="$app/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist"
   if [[ -f "$electronFrameworkInfo" ]]; then

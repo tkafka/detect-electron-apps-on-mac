@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Directly detect Electron apps using the _cornerMask override - thanks avarayr!
-mdfind "kMDItemFSName == '*.app'" | sort --ignore-case | while read -r app; do
+find /Applications /System/Applications ~/Applications -name "*.app" -type d 2>/dev/null | sort --ignore-case | while read -r app; do
   electronFiles=$(find "$app" -name "Electron Framework" -type f 2>/dev/null)
   
   if [[ -n "$electronFiles" ]]; then
