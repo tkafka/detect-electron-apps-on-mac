@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# NOTE: You need to run this script from the terminal as ./detect-running-affected-electron-apps.sh, this one won't work if you simply paste the file contents into the terminal
+
 running_procs=$(ps -eo comm= | sed 's|.*/||' | sort -u)
 
 check_electron_version() {
