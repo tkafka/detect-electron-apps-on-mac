@@ -75,8 +75,18 @@ export SEARCH_CMD="$search_cmd"
 
 {
     mdfind "kMDItemFSName == '*.app'" 2>/dev/null | while IFS= read -r app; do
+        # Check standard location
         if [[ -f "$app/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist" ]]; then
             echo "$app"
+        fi
+        # Check for nested .app bundles in Contents/MacOS/
+        if [[ -d "$app/Contents/MacOS" ]]; then
+            find "$app/Contents/MacOS" -name "*.app" -type d -maxdepth 1 2>/dev/null | \
+            while IFS= read -r nested; do
+                if [[ -f "$nested/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist" ]]; then
+                    echo "$nested"
+                fi
+            done
         fi
     done
     # -P 0 runs unlimited parallel processes, _ is placeholder for $0, {} becomes $1
