@@ -17,8 +17,10 @@ check_electron_version() {
 
 # Use ripgrep when available
 search_cmd="grep -aqF"
+extract_cmd="grep -oE"
 if command -v rg &>/dev/null; then
     search_cmd="rg -q --text -F"
+    extract_cmd="rg -o"
 fi
 
 process_app() {
@@ -72,21 +74,16 @@ export -f process_app
 export -f check_electron_version
 export RUNNING_PROCS="$running_procs"
 export SEARCH_CMD="$search_cmd"
+export EXTRACT_CMD="$extract_cmd"
 
 {
     mdfind "kMDItemFSName == '*.app'" 2>/dev/null | while IFS= read -r app; do
         # Check standard location
         if [[ -f "$app/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist" ]]; then
             echo "$app"
-        fi
-        # Check for nested .app bundles in Contents/MacOS/
-        if [[ -d "$app/Contents/MacOS" ]]; then
-            find "$app/Contents/MacOS" -name "*.app" -type d -maxdepth 1 2>/dev/null | \
-            while IFS= read -r nested; do
-                if [[ -f "$nested/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist" ]]; then
-                    echo "$nested"
-                fi
-            done
+        else
+            # Search entire app bundle for nested Electron apps at any depth
+            find "$app" -type f -name "Info.plist" -path "*Electron Framework*" 2>/dev/null | $EXTRACT_CMD '^.*\.app'
         fi
     done
     # -P 0 runs unlimited parallel processes, _ is placeholder for $0, {} becomes $1
