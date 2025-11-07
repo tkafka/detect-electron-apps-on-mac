@@ -46,10 +46,8 @@ process_app() {
     local app="$1"
     local appName
     appName=$(basename "$app")
-    local appNameNoExt="${appName%.app}"
 
     local runningStatus
-    
     # Check if ANY executable from the app's MacOS directory is running
     if pgrep -f "^$app/Contents/MacOS/" >/dev/null 2>&1; then
         runningStatus="🔵"
