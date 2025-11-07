@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 # NOTE: You need to run this script from the terminal as ./detect-running-affected-electron-apps.sh, this one won't work if you simply paste the file contents into the terminal
+#
+# For 2x faster performance, install fd: brew install fd
+# Usage: ./detect-running-affected-electron-apps.sh [--fast]
+#   --fast: Only check standard locations (faster but may miss nested apps like Docker Desktop)
+
+# Parse command line arguments
+FAST_MODE=false
+if [[ "$1" == "--fast" ]]; then
+    FAST_MODE=true
+fi
 
 running_procs=$(ps -eo comm= | sed 's|.*/||' | sort -u)
 
@@ -83,13 +93,15 @@ export RUNNING_PROCS="$running_procs"
 export SEARCH_CMD="$search_cmd"
 export EXTRACT_CMD="$extract_cmd"
 export FIND_CMD="$find_cmd"
+export FAST_MODE="$FAST_MODE"
 
 {
     mdfind "kMDItemFSName == '*.app'" 2>/dev/null | while IFS= read -r app; do
         # Check standard location
         if [[ -f "$app/Contents/Frameworks/Electron Framework.framework/Resources/Info.plist" ]]; then
             echo "$app"
-        else
+        elif [[ "$FAST_MODE" != "true" ]]; then
+            # Only do deep search if not in fast mode
             # Search entire app bundle for nested Electron apps at any depth
             if [[ "$FIND_CMD" == "fd -t f" ]]; then
                 $FIND_CMD Info.plist "$app" 2>/dev/null | grep "Electron Framework" | $EXTRACT_CMD '^.*\.app'
@@ -115,4 +127,5 @@ export FIND_CMD="$find_cmd"
     echo
     echo "🔵 = Running, ⚪️ = Not running"
     echo "✅ = Updated, 🔄 = Outdated, ⚠️ = Affected (contains _cornerMask)"
+    [[ "$FAST_MODE" == "true" ]] && echo "⚡ Fast mode: only checking standard locations"
 }
