@@ -31,7 +31,7 @@ if command -v rg &>/dev/null; then
     extract_cmd="rg -o"
 fi
 
-# Use fd when available (2.3x faster than find!)
+# fd is faster than find
 if command -v fd &>/dev/null; then
     find_cmd="fd -t f"
 else
@@ -49,7 +49,7 @@ process_app() {
     local appNameNoExt="${appName%.app}"
 
     local runningStatus
-    # Use pgrep for accurate detection of running apps
+    
     # Check if ANY executable from the app's MacOS directory is running
     if pgrep -f "^$app/Contents/MacOS/" >/dev/null 2>&1; then
         runningStatus="🔵"
