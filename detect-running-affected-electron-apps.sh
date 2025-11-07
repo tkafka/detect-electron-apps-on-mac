@@ -10,7 +10,6 @@ if [[ "$1" == "--fast" ]]; then
     FAST_MODE=true
 fi
 
-running_procs=$(ps -eo comm= | sed 's|.*/||' | sort -u)
 
 check_electron_version() {
     local major=$1 minor=$2 patch=$3
@@ -50,7 +49,9 @@ process_app() {
     local appNameNoExt="${appName%.app}"
 
     local runningStatus
-    if echo "$RUNNING_PROCS" | grep -Fxq "$appNameNoExt"; then
+    # Use pgrep for accurate detection of running apps
+    # Check if ANY executable from the app's MacOS directory is running
+    if pgrep -f "^$app/Contents/MacOS/" >/dev/null 2>&1; then
         runningStatus="🔵"
     else
         runningStatus="⚪️"
@@ -92,7 +93,6 @@ process_app() {
 # Export functions and variables so xargs subshells can access them
 export -f process_app
 export -f check_electron_version
-export RUNNING_PROCS="$running_procs"
 export SEARCH_CMD="$search_cmd"
 export EXTRACT_CMD="$extract_cmd"
 export FIND_CMD="$find_cmd"
