@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 # NOTE: You need to run this script from the terminal as ./detect-running-affected-electron-apps.sh, this one won't work if you simply paste the file contents into the terminal
 #
-# For 2x faster performance, install fd: brew install fd
 # Usage: ./detect-running-affected-electron-apps.sh [--fast]
 #   --fast: Only check standard locations (faster but may miss nested apps like Docker Desktop)
 
@@ -38,6 +37,10 @@ if command -v fd &>/dev/null; then
     find_cmd="fd -t f"
 else
     find_cmd="find"
+    if [[ "$FAST_MODE" != "true" ]]; then
+        echo "💡 Tip: Install fd for faster performance: brew install fd" >&2
+        echo "" >&2
+    fi
 fi
 
 process_app() {
