@@ -110,7 +110,7 @@ export FAST_MODE="$FAST_MODE"
             fi
         fi
     done
-} | xargs -P 0 -I {} bash -c 'process_app "$1"' _ '{}' | {
+} | xargs -P 0 -I {} bash -c "process_app \"\$1\"" _ '{}' | {
     all_data=$(cat)
 
     max_app_len=0
